@@ -1,0 +1,5 @@
+.DS_Store
+venv/
+notes.md
+cdk.out/
+__pycache__
