@@ -13,8 +13,8 @@ class SecurityStack(core.Stack):
         prj_name = self.node.try_get_context("project_name")
         env_name = self.node.try_get_context("env")
 
-        lambda_sg = ec2.SecurityGroup(self, 'lambdasg',
-            security_group_name = 'lambdasg',
+        self.lambda_sg = ec2.SecurityGroup(self, 'lambdasg',
+            security_group_name = 'lambda-sg',
             vpc = vpc,
             description = "Security Group for Lambda Functions",
             allow_all_outbound = True
@@ -46,7 +46,7 @@ class SecurityStack(core.Stack):
 
         ssm.StringParameter(self, 'lambdasg-param',
             parameter_name = '/' + env_name + '/lambda-sg',
-            string_value = lambda_sg.security_group_id
+            string_value = self.lambda_sg.security_group_id
         )
 
         ssm.StringParameter(self, 'lambdarole-param',
