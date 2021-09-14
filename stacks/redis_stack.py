@@ -31,3 +31,13 @@ class RedisStack(core.Stack):
         )
 
         redis_cluster.add_depends_on(subnet_group)
+
+        ssm.StringParameter(self, 'redis-endpoint',
+            parameter_name = '/' + env_name + '/redis-endpoint',
+            string_value = redis_cluster.attr_redis_endpoint_address
+        )
+
+        ssm.StringParameter(self, 'redis-port',
+            parameter_name = '/' + env_name + '/redis-port',
+            string_value = redis_cluster.attr_redis_endpoint_port
+        )
