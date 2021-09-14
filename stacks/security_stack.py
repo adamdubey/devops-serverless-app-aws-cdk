@@ -29,6 +29,15 @@ class SecurityStack(core.Stack):
 
         self.bastion_sg.add_ingress_rule(ec2.Peer.any_ipv4(), ec2.Port.tcp(22), "SSH Access")
 
+        redis_sg = ec2.SecurityGroup(self, 'redissg',
+            security_group_name = 'redis-sg',
+            vpc = vpc,
+            description = "Security Group for Redis Cluster",
+            allow_all_outbound = True
+        )
+
+        redis_sg.add_ingress_rule(self.lambda_sg, ec2.Port.tcp(6379), 'Access from Lambda Functions')
+
         lambda_role = iam.Role(self, 'lambdarole',
             assumed_by = iam.ServicePrincipal(service = 'lambda.amazonaws.com'),
             role_name = 'lambda-role',
@@ -42,6 +51,11 @@ class SecurityStack(core.Stack):
                 actions = ['s3:*', 'rds:*'],
                 resources = ['*']
             )
+        )
+
+        core.CfnOutput(self, 'redis-export',
+            export_name = 'redis-sg-export',
+            value = redis_sg.security_group_id
         )
 
         ssm.StringParameter(self, 'lambdasg-param',

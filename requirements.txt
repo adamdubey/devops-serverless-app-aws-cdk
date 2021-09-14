@@ -7,3 +7,4 @@ aws-cdk.aws-kms
 aws-cdk.aws-iam
 aws-cdk.aws-secretsmanager
 aws-cdk.aws-rds
+aws-cdk.aws-elasticache
