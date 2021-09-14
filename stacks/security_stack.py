@@ -13,8 +13,8 @@ class SecurityStack(core.Stack):
         prj_name = self.node.try_get_context("project_name")
         env_name = self.node.try_get_context("env")
 
-        lambda_sg = ec2.SecurityGroup(self, 'lambdasg',
-            security_group_name = 'lambdasg',
+        self.lambda_sg = ec2.SecurityGroup(self, 'lambdasg',
+            security_group_name = 'lambda-sg',
             vpc = vpc,
             description = "Security Group for Lambda Functions",
             allow_all_outbound = True
@@ -28,6 +28,15 @@ class SecurityStack(core.Stack):
         )
 
         self.bastion_sg.add_ingress_rule(ec2.Peer.any_ipv4(), ec2.Port.tcp(22), "SSH Access")
+
+        redis_sg = ec2.SecurityGroup(self, 'redissg',
+            security_group_name = 'redis-sg',
+            vpc = vpc,
+            description = "Security Group for Redis Cluster",
+            allow_all_outbound = True
+        )
+
+        redis_sg.add_ingress_rule(self.lambda_sg, ec2.Port.tcp(6379), 'Access from Lambda Functions')
 
         lambda_role = iam.Role(self, 'lambdarole',
             assumed_by = iam.ServicePrincipal(service = 'lambda.amazonaws.com'),
@@ -44,9 +53,14 @@ class SecurityStack(core.Stack):
             )
         )
 
+        core.CfnOutput(self, 'redis-export',
+            export_name = 'redis-sg-export',
+            value = redis_sg.security_group_id
+        )
+
         ssm.StringParameter(self, 'lambdasg-param',
             parameter_name = '/' + env_name + '/lambda-sg',
-            string_value = lambda_sg.security_group_id
+            string_value = self.lambda_sg.security_group_id
         )
 
         ssm.StringParameter(self, 'lambdarole-param',
