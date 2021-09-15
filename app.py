@@ -10,6 +10,7 @@ from stacks.rds_stack import RDSStack
 from stacks.redis_stack import RedisStack
 from stacks.cognito_stack import CognitoStack
 from stacks.apigw_stack import APIStack
+from stacks.lambda_stack import LambdaStack
 
 app = core.App()
 
@@ -22,5 +23,6 @@ rds_stack = RDSStack(app, 'rds', vpc = vpc_stack.vpc, lambdasg = security_stack.
 redis_stack = RedisStack(app, 'redis', vpc = vpc_stack.vpc, redissg = core.Fn.import_value('redis-sg-export'))
 cognito_stack = CognitoStack(app, 'cognito')
 apigw_stack = APIStack(app, 'apigw')
+lambda_stack = LambdaStack(app, 'lambda')
 
 app.synth()
