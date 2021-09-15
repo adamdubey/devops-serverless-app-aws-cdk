@@ -8,3 +8,4 @@ aws-cdk.aws-iam
 aws-cdk.aws-secretsmanager
 aws-cdk.aws-rds
 aws-cdk.aws-elasticache
+aws-cdk.aws-cognito
