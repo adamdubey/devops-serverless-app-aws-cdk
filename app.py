@@ -11,6 +11,7 @@ from stacks.redis_stack import RedisStack
 from stacks.cognito_stack import CognitoStack
 from stacks.apigw_stack import APIStack
 from stacks.lambda_stack import LambdaStack
+from stacks.codepipeline_backend import CodePipelineBackendStack
 
 app = core.App()
 
@@ -24,5 +25,6 @@ redis_stack = RedisStack(app, 'redis', vpc = vpc_stack.vpc, redissg = core.Fn.im
 cognito_stack = CognitoStack(app, 'cognito')
 apigw_stack = APIStack(app, 'apigw')
 lambda_stack = LambdaStack(app, 'lambda')
+#cp_backend = CodePipelineBackendStack(app, 'cp-backend', artifactbucket = core.Fn.import_value('build-artifacts-bucket'))
 
 app.synth()
