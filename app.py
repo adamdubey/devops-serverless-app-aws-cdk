@@ -12,6 +12,7 @@ from stacks.cognito_stack import CognitoStack
 from stacks.apigw_stack import APIStack
 from stacks.lambda_stack import LambdaStack
 from stacks.codepipeline_backend import CodePipelineBackendStack
+from stacks.notifications import NotificationStack
 
 app = core.App()
 
@@ -26,5 +27,6 @@ cognito_stack = CognitoStack(app, 'cognito')
 apigw_stack = APIStack(app, 'apigw')
 lambda_stack = LambdaStack(app, 'lambda')
 #cp_backend = CodePipelineBackendStack(app, 'cp-backend', artifactbucket = core.Fn.import_value('build-artifacts-bucket'))
+notification_stack = NotificationStack(app, 'notification')
 
 app.synth()

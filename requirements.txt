@@ -11,3 +11,7 @@ aws-cdk.aws-elasticache
 aws-cdk.aws-cognito
 aws-cdk.aws-apigateway
 aws-cdk.aws-lambda
+aws-cdk.aws-sns
+aws-cdk.aws-events
+aws-cdk.aws-events-targets
+
