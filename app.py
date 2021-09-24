@@ -14,6 +14,7 @@ from stacks.lambda_stack import LambdaStack
 from stacks.codepipeline_backend import CodePipelineBackendStack
 from stacks.notifications import NotificationStack
 from stacks.cdn_stack import CDNStack
+from stacks.codepipeline_frontend import CodePipelineFrontendStack
 
 app = core.App()
 
@@ -30,5 +31,6 @@ lambda_stack = LambdaStack(app, 'lambda')
 #cp_backend = CodePipelineBackendStack(app, 'cp-backend', artifactbucket = core.Fn.import_value('build-artifacts-bucket'))
 notification_stack = NotificationStack(app, 'notification')
 cdn_stack = CDNStack(app, 'cdn', s3bucket = core.Fn.import_value('frontend-bucket'))
+#cp_frontend = CodePipelineFrontendStack(app, 'cp-frontend', webhostingbucket = core.Fn.import_value('frontend-bucket'))
 
 app.synth()
