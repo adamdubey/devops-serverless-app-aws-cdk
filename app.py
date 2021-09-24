@@ -13,6 +13,7 @@ from stacks.apigw_stack import APIStack
 from stacks.lambda_stack import LambdaStack
 from stacks.codepipeline_backend import CodePipelineBackendStack
 from stacks.notifications import NotificationStack
+from stacks.cdn_stack import CDNStack
 
 app = core.App()
 
@@ -28,5 +29,6 @@ apigw_stack = APIStack(app, 'apigw')
 lambda_stack = LambdaStack(app, 'lambda')
 #cp_backend = CodePipelineBackendStack(app, 'cp-backend', artifactbucket = core.Fn.import_value('build-artifacts-bucket'))
 notification_stack = NotificationStack(app, 'notification')
+cdn_stack = CDNStack(app, 'cdn', s3bucket = core.Fn.import_value('frontend-bucket'))
 
 app.synth()
