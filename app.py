@@ -16,8 +16,12 @@ from stacks.notifications import NotificationStack
 from stacks.cdn_stack import CDNStack
 from stacks.codepipeline_frontend import CodePipelineFrontendStack
 from stacks.waf_stack import WafStack
+from stacks.route53_stack import DnsStack
+from stacks.acm_stack import ACMStack
 
 app = core.App()
+
+# Note: The order of these stacks does matter - Do NOT modify!
 
 vpc_stack = VPCStack(app, 'vpc')
 security_stack = SecurityStack(app, 'security-stack', vpc = vpc_stack.vpc)
@@ -31,8 +35,10 @@ apigw_stack = APIStack(app, 'apigw')
 lambda_stack = LambdaStack(app, 'lambda')
 #cp_backend = CodePipelineBackendStack(app, 'cp-backend', artifactbucket = core.Fn.import_value('build-artifacts-bucket'))
 notification_stack = NotificationStack(app, 'notification')
-cdn_stack = CDNStack(app, 'cdn', s3bucket = core.Fn.import_value('frontend-bucket'))
 #cp_frontend = CodePipelineFrontendStack(app, 'cp-frontend', webhostingbucket = core.Fn.import_value('frontend-bucket'))
 waf_stack = WafStack(app, 'waf')
+acm_stack = ACMStack(app, 'acm')
+cdn_stack = CDNStack(app, 'cdn', s3bucket = core.Fn.import_value('frontend-bucket'), acmcert = acm_stack.cert_manager)
+route53_stack = DnsStack(app, 'route53', cdnid = cdn_stack.cdn_id)
 
 app.synth()
