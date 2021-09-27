@@ -18,6 +18,7 @@ from stacks.codepipeline_frontend import CodePipelineFrontendStack
 from stacks.waf_stack import WafStack
 from stacks.route53_stack import DnsStack
 from stacks.acm_stack import ACMStack
+from stacks.cloudtrail_stack import CloudTrailStack
 
 app = core.App()
 
@@ -40,5 +41,6 @@ waf_stack = WafStack(app, 'waf')
 acm_stack = ACMStack(app, 'acm')
 cdn_stack = CDNStack(app, 'cdn', s3bucket = core.Fn.import_value('frontend-bucket'), acmcert = acm_stack.cert_manager)
 route53_stack = DnsStack(app, 'route53', cdnid = cdn_stack.cdn_id)
+cloudtrail_stack = CloudTrailStack(app, 'cloudtrail', s3bucket = s3_stack.cloudtrail_bucket)
 
 app.synth()
