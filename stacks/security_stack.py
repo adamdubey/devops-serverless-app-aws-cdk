@@ -38,6 +38,19 @@ class SecurityStack(core.Stack):
 
         redis_sg.add_ingress_rule(self.lambda_sg, ec2.Port.tcp(6379), 'Access from Lambda Functions')
 
+        self.kibana_sg = ec2.SecurityGroup(self, 'kibanasg',
+            security_group_name = 'kibana-sg',
+            vpc = vpc,
+            description = "Security Group for Kibana",
+            allow_all_outbound = True
+        )
+        
+        self.kibana_sg.add_ingress_rule(self.bastion_sg, ec2.Port.tcp(443), "Access from Bastion Host")
+
+        kibana_role = iam.CfnServiceLinkedRole(self, 'kibanarole',
+            aws_service_name = 'es.amazonaws.com'
+        )
+        
         lambda_role = iam.Role(self, 'lambdarole',
             assumed_by = iam.ServicePrincipal(service = 'lambda.amazonaws.com'),
             role_name = 'lambda-role',
