@@ -14,4 +14,6 @@ aws-cdk.aws-lambda
 aws-cdk.aws-sns
 aws-cdk.aws-events
 aws-cdk.aws-events-targets
-
+aws-cdk.aws-wafv2
+aws-cdk.aws-route53
+aws-cdk.aws-route53-targets

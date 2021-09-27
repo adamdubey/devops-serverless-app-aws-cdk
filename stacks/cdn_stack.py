@@ -7,7 +7,7 @@ from aws_cdk import (
 
 class CDNStack(core.Stack):
 
-    def __init__(self, scope: core.Construct, id: str, s3bucket, **kwargs) -> None:
+    def __init__(self, scope: core.Construct, id: str, s3bucket, acmcert, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         prj_name = self.node.try_get_context("project_name")
@@ -15,7 +15,7 @@ class CDNStack(core.Stack):
 
         bucketName = s3.Bucket.from_bucket_name(self, 's3bucket', s3bucket)
 
-        cdn_id = cdn.CloudFrontWebDistribution(self, 'webhosting-cdn',
+        self.cdn_id = cdn.CloudFrontWebDistribution(self, 'webhosting-cdn',
             origin_configs = [cdn.SourceConfiguration(
                 behaviors = [
                     cdn.Behavior(is_default_behavior = True)
@@ -42,15 +42,19 @@ class CDNStack(core.Stack):
                     response_code = 200,
                     response_page_path = "/hello.html"
                 )
-            ]
+            ],
+            alias_configuration = cdn.AliasConfiguration(
+                acm_cert_ref = acmcert.certificate_arn,
+                names = ['app.cathedralsoftware.net']
+            )
         )
 
         ssm.StringParameter(self, 'cdn-dist-id',
             parameter_name = '/' + env_name + '/app-distribution-id',
-            string_value = cdn_id.distribution_id
+            string_value = self.cdn_id.distribution_id
         )
 
         ssm.StringParameter(self, 'cdn-url',
             parameter_name = '/' + env_name + '/app-cdn-url',
-            string_value = 'https://' + cdn_id.domain_name
+            string_value = 'https://' + self.cdn_id.domain_name
         )
